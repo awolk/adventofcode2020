@@ -1,9 +1,10 @@
 import sys
+import aoc
 
-with open('input.txt') as f:
-    input_file = f.read()
 
-numbers = {int(line) for line in input_file.split('\n')}
+input = aoc.get_input('day1.txt')
+
+numbers = {int(line) for line in input.split('\n')}
 
 for n in numbers:
     other = 2020 - n

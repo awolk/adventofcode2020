@@ -1,7 +1,8 @@
 import re
+import aoc
 
-with open('input.txt') as f:
-    input_file = f.read()
+
+input = aoc.get_input('day4.txt')
 
 valid = 0
 valid2 = 0
@@ -38,9 +39,8 @@ def is_valid(details):
 
     return True
 
-for line in input_file.splitlines() + ['']:
+for line in input.splitlines() + ['']:
     if not line:
-        print(details)
         if {'byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid'} <= set(details.keys()):
             valid += 1
             valid2 += is_valid(details)
@@ -51,5 +51,5 @@ for line in input_file.splitlines() + ['']:
         key, value = entry.split(':')
         details[key] = value
 
-print(valid)
-print(valid2)
+print('Part 1:', valid)
+print('Part 2:', valid2)

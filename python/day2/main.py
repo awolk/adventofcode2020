@@ -1,8 +1,7 @@
 import re
+import aoc
 
-with open('input.txt') as f:
-    input_file = f.read()
-lines = input_file.splitlines()
+lines = aoc.get_input('day2.txt').splitlines()
 
 pattern = re.compile('([0-9]+)-([0-9]+) ([a-z]): ([a-z]+)')
 

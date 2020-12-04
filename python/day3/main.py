@@ -1,6 +1,7 @@
-with open('input.txt') as f:
-    input_file = f.read()
-map = input_file.splitlines()
+import aoc
+
+
+map = aoc.get_input('day3.txt').splitlines()
 
 trees = 0
 
