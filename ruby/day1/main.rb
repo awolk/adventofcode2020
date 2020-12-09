@@ -25,5 +25,3 @@ s.part2 do |numbers|
     end
   end
 end
-
-s.run

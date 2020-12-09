@@ -31,6 +31,3 @@ s.part2 do |found_ids|
     end
   end
 end
-
-
-s.run

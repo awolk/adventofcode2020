@@ -18,5 +18,3 @@ s.part2 do |map|
     tree_hits(map, dy, dx)
   end.reduce(:*)
 end
-
-s.run

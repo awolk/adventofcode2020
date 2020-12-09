@@ -20,5 +20,3 @@ s.part2 do |lines|
     (l.password[l.a - 1] == l.letter) ^ (l.password[l.b - 1] == l.letter)
   end
 end
-
-s.run

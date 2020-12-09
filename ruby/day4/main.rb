@@ -35,4 +35,3 @@ end
 
 s.part1 {_1.length}
 s.part2 {_1.count(&:valid?)}
-s.run

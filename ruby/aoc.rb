@@ -19,16 +19,20 @@ module AOC
 
     def part1(&blk)
       define_singleton_method(:exec_part1, blk)
+      res = exec_part1(preprocessed)
+      puts "Part 1: #{res}"
+      res
     end
 
     def part2(&blk)
       define_singleton_method(:exec_part2, blk)
+      res = exec_part2(preprocessed)
+      puts "Part 2: #{res}"
+      res
     end
 
-    def run(output_result: true)
-      processed = @preprocessor.call(AOC.get_input(@day))
-      puts("Part 1: #{exec_part1(processed)}")
-      puts("Part 2: #{exec_part2(processed)}")
+    private def preprocessed
+      @preprocessed_input ||= @preprocessor.call(AOC.get_input(@day))
     end
   end
 end

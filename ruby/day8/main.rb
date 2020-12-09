@@ -59,5 +59,3 @@ s.part2 do |instrs|
     return acc if res == :done
   end
 end
-
-s.run

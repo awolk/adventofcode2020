@@ -56,5 +56,3 @@ s.part2 do |color_holds|
   end
   min_contains['shiny gold']
 end
-
-s.run

@@ -20,5 +20,3 @@ s.part2 do |groups|
     people.reduce(:intersection).length
   end.sum
 end
-
-s.run
