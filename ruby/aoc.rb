@@ -7,8 +7,7 @@ module AOC
   end
 
   class Solution
-    def initialize(day)
-      @day = day
+    def initialize
       # by default split by lines
       @preprocessor = -> {_1.split("\n")}
     end
@@ -19,20 +18,23 @@ module AOC
 
     def part1(&blk)
       define_singleton_method(:exec_part1, blk)
-      res = exec_part1(preprocessed)
-      puts "Part 1: #{res}"
-      res
     end
 
     def part2(&blk)
       define_singleton_method(:exec_part2, blk)
-      res = exec_part2(preprocessed)
-      puts "Part 2: #{res}"
-      res
     end
 
-    private def preprocessed
-      @preprocessed_input ||= @preprocessor.call(AOC.get_input(@day))
+    def exec(day)
+      preprocessed = @preprocessor.call(AOC.get_input(day))
+      part1 = exec_part1(preprocessed)
+      if method(:exec_part2).parameters.length == 2
+        part2 = exec_part2(preprocessed, part1)
+      else
+        part2 = exec_part2(preprocessed)
+      end
+
+      puts "Part 1: #{part1}"
+      puts "Part 2: #{part2}"
     end
   end
 end

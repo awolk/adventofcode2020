@@ -1,13 +1,13 @@
 require 'set'
 require_relative '../aoc'
 
-s = AOC::Solution.new(9)
+s = AOC::Solution.new
 
 s.preprocess do |input|
   input.split("\n").map(&:to_i)
 end
 
-part1 = s.part1 do |nums|
+s.part1 do |nums|
   (25...nums.length).each do |i|
     preamble = nums[i-25...i].to_set
     num = nums[i]
@@ -18,7 +18,7 @@ part1 = s.part1 do |nums|
   end
 end
 
-s.part2 do |nums|
+s.part2 do |nums, part1|
   (0...nums.length).each do |i1|
     (i1+1...nums.length).each do |i2|
       range = nums[i1..i2]
@@ -28,3 +28,5 @@ s.part2 do |nums|
     end
   end
 end
+
+s.exec(9)

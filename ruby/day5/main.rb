@@ -12,7 +12,7 @@ def decode(line)
   Seat.new(row, col)
 end
 
-s = AOC::Solution.new(5)
+s = AOC::Solution.new
 
 s.preprocess do |input|
   input.split("\n").map {decode(_1).id}
@@ -31,3 +31,5 @@ s.part2 do |found_ids|
     end
   end
 end
+
+s.exec(5)

@@ -1,7 +1,7 @@
 require 'set'
 require_relative '../aoc'
 
-s = AOC::Solution.new(1)
+s = AOC::Solution.new
 
 s.preprocess {_1.split.map(&:to_i).to_set}
 
@@ -25,3 +25,5 @@ s.part2 do |numbers|
     end
   end
 end
+
+s.exec(1)

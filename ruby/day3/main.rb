@@ -7,7 +7,7 @@ def tree_hits(map, dy, dx)
   end
 end
 
-s = AOC::Solution.new(3)
+s = AOC::Solution.new
 
 s.part1 do |map|
   tree_hits(map, 1, 3)
@@ -18,3 +18,5 @@ s.part2 do |map|
     tree_hits(map, dy, dx)
   end.reduce(:*)
 end
+
+s.exec(3)

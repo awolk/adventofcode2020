@@ -1,7 +1,7 @@
 require 'set'
 require_relative '../aoc'
 
-s = AOC::Solution.new(7)
+s = AOC::Solution.new
 
 s.preprocess do |input|
   input.split("\n").map do |line|
@@ -56,3 +56,5 @@ s.part2 do |color_holds|
   end
   min_contains['shiny gold']
 end
+
+s.exec(7)

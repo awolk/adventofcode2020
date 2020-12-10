@@ -1,7 +1,7 @@
 require 'set'
 require_relative '../aoc'
 
-s = AOC::Solution.new(6)
+s = AOC::Solution.new
 
 s.preprocess do |input|
   input.split("\n\n").map do |group|
@@ -20,3 +20,5 @@ s.part2 do |groups|
     people.reduce(:intersection).length
   end.sum
 end
+
+s.exec(6)

@@ -26,7 +26,7 @@ def exec_program(instrs)
   end
 end
 
-s = AOC::Solution.new(8)
+s = AOC::Solution.new
 
 s.preprocess do |input|
   input.split("\n").map do |line|
@@ -59,3 +59,5 @@ s.part2 do |instrs|
     return acc if res == :done
   end
 end
+
+s.exec(8)

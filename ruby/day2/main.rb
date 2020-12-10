@@ -2,7 +2,7 @@ require_relative '../aoc'
 
 Line = Struct.new(:a, :b, :letter, :password)
 
-s = AOC::Solution.new(2)
+s = AOC::Solution.new
 
 s.preprocess do |input|
   l = input.split("\n").map do |line|
@@ -20,3 +20,5 @@ s.part2 do |lines|
     (l.password[l.a - 1] == l.letter) ^ (l.password[l.b - 1] == l.letter)
   end
 end
+
+s.exec(2)

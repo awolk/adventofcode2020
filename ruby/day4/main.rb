@@ -21,7 +21,7 @@ Passport = Struct.new(:byr, :iyr, :eyr, :hgt, :hcl, :ecl, :pid, keyword_init: tr
   end
 end
 
-s = AOC::Solution.new(4)
+s = AOC::Solution.new
 
 s.preprocess do |input|
   required_keys = Passport.members.map(&:to_s).to_set
@@ -35,3 +35,4 @@ end
 
 s.part1 {_1.length}
 s.part2 {_1.count(&:valid?)}
+s.exec(4)
