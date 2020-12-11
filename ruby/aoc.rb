@@ -27,13 +27,13 @@ module AOC
     def exec(day)
       preprocessed = @preprocessor.call(AOC.get_input(day))
       part1 = exec_part1(preprocessed)
+      puts "Part 1: #{part1}"
+
       if method(:exec_part2).parameters.length == 2
         part2 = exec_part2(preprocessed, part1)
       else
         part2 = exec_part2(preprocessed)
       end
-
-      puts "Part 1: #{part1}"
       puts "Part 2: #{part2}"
     end
   end
