@@ -5,21 +5,21 @@ def radians(degrees)
   degrees * Math::PI / 180
 end
 
-def sin(angle)
+def sin_deg(angle)
   Math.sin(radians(angle)).round
 end
 
-def cos(angle)
+def cos_deg(angle)
   Math.cos(radians(angle)).round
 end
 
 def components(angle)
-  Vector[cos(angle), sin(angle)]
+  Vector[cos_deg(angle), sin_deg(angle)]
 end
 
 def rotate(vector, angle)
-  rotation_matrix = Matrix[[cos(angle), -sin(angle)],
-                           [sin(angle), cos(angle)]]
+  rotation_matrix = Matrix[[cos_deg(angle), -sin_deg(angle)],
+                           [sin_deg(angle),  cos_deg(angle)]]
   rotation_matrix * vector
 end
 
@@ -37,13 +37,13 @@ s.part1 do |steps|
   steps.each do |instr, num|
     case instr
     when 'N'
-      pos[1] += num
+      pos += Vector[0, num]
     when 'S'
-      pos[1] -= num
+      pos -= Vector[0, num]
     when 'E'
-      pos[0] += num
+      pos += Vector[num, 0]
     when 'W'
-      pos[0] -= num
+      pos -= Vector[num, 0]
     when 'L'
       dir += num
     when 'R'
@@ -61,13 +61,13 @@ s.part2 do |steps|
   steps.each do |instr, num|
     case instr
     when 'N'
-      waypoint[1] += num
+      waypoint += Vector[0, num]
     when 'S'
-      waypoint[1] -= num
+      waypoint -= Vector[0, num]
     when 'E'
-      waypoint[0] += num
+      waypoint += Vector[num, 0]
     when 'W'
-      waypoint[0] -= num
+      waypoint -= Vector[num, 0]
     when 'L'
       waypoint = rotate(waypoint, num)
     when 'R'
