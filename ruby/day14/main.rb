@@ -33,14 +33,14 @@ def each_floating_addr(addr, &blk)
   rest = addr[(first_x+1)..]
   %w[0 1].each do |c|
     each_floating_addr(rest) do |addr_from_rest|
-      yield(prelude + c + addr_from_rest)
+      yield prelude + c + addr_from_rest
     end
   end
 end
 
 # run program and return sum of memory values, given a block that describes how to set memory values
 def interpret(program, &set_memory)
-  memory = Hash.new {|h, k| h[k] = 0}
+  memory = {}
   mask = nil
 
   program.each do |instr|
@@ -79,7 +79,7 @@ s.part2 do |prog|
   interpret(prog) do |mem, mask, addr, val|
     floating_addr = mask_addr(addr, mask)
     each_floating_addr(floating_addr) do |real_addr|
-      mem[real_addr] = val
+      mem[real_addr.to_i] = val
     end
   end
 end
