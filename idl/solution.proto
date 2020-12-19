@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+message SolutionRequest {
+  string input = 1;
+}
+
+message SolutionReply {
+  int64 part1_solution = 1;
+  int64 part2_solution = 2;
+}
+
+service Solution {
+  rpc GetSolution(SolutionRequest) returns (SolutionReply) {}
+}

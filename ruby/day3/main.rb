@@ -1,4 +1,4 @@
-require_relative '../aoc'
+require_relative '../aoc/aoc'
 
 def tree_hits(map, dy, dx)
   (0...map.length).step(dy).with_index.count do |row_index, col|

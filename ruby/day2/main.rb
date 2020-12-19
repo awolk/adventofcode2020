@@ -1,4 +1,4 @@
-require_relative '../aoc'
+require_relative '../aoc/aoc'
 
 Line = Struct.new(:a, :b, :letter, :password)
 

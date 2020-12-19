@@ -1,5 +1,5 @@
 require 'matrix'
-require_relative '../aoc'
+require_relative '../aoc/aoc'
 
 def radians(degrees)
   degrees * Math::PI / 180

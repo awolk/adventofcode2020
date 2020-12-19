@@ -1,5 +1,5 @@
 require 'set'
-require_relative '../aoc'
+require_relative '../aoc/aoc'
 
 s = AOC::Solution.new
 

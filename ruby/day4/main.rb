@@ -1,5 +1,5 @@
 require 'set'
-require_relative '../aoc'
+require_relative '../aoc/aoc'
 
 def num_in_range(str, min, max, digits: nil)
   return false if !digits.nil? && str.length != digits

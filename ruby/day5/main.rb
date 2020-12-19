@@ -1,4 +1,4 @@
-require_relative '../aoc'
+require_relative '../aoc/aoc'
 
 Seat = Struct.new(:row, :column) do
   def id

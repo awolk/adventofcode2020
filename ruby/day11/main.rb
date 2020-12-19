@@ -1,5 +1,5 @@
 require 'set'
-require_relative '../aoc'
+require_relative '../aoc/aoc'
 
 def step(grid, max_adjacent:, adjacent_by_visibility: false)
   grid.each_with_index.map do |row, row_index|
