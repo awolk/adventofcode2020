@@ -2,6 +2,15 @@ require 'set'
 require 'matrix'
 require_relative '../aoc/aoc'
 
+module Enumerable
+  # Find exactly one matching value, useful for correctness
+  def find_one!(&blk)
+    matching = find_all(&blk)
+    raise "Expected exactly one result" unless matching.length == 1
+    matching[0]
+  end
+end
+
 Tile = Struct.new(:id, :grid) do
   def width; grid[0].length end
   def height; grid.length end
@@ -43,18 +52,20 @@ s.preprocess do |input|
 end
 
 s.part1 do |tiles|
+  # find tiles with possible sides in common
   matches = tiles.combination(2).reject do |a, b|
     (a.all_possible_sides & b.all_possible_sides).empty?
   end
 
-  corners = matches.flat_map do |a, b|
+  corner_ids = matches.flat_map do |a, b|
     [a.id, b.id]
   end.tally.filter_map do |id, edges_count|
+    # corners have 2 possible edges to other tiles
     id if edges_count == 2
   end
-  raise "Uncertain result" unless corners.length == 4
+  raise "Unexpected number of corners" unless corner_ids.length == 4
 
-  corners.reduce(:*)
+  corner_ids.reduce(:*)
 end
 
 s.part2 do |tiles|
@@ -63,142 +74,90 @@ s.part2 do |tiles|
     (a.all_possible_sides & b.all_possible_sides).empty?
   end
 
-  matches_hash = matches.each_with_object({}) do |(a, b), h|
+  adjacent_ids = matches.each_with_object({}) do |(a, b), h|
     h[a.id] ||= []
     h[a.id] << b.id
     h[b.id] ||= []
     h[b.id] << a.id
   end
 
-  counts_to_ids = matches.flat_map do |a, b|
+  tile_map = tiles.map {[_1.id, _1]}.to_h
+
+  # Pick a corner as the top left corner arbitrarily
+  tl_corner_id, _ = matches.flat_map do |a, b|
     [a.id, b.id]
-  end.tally.each_with_object({}) do |(id, count), h|
-    h[count] ||= []
-    h[count] << id
+  end.tally.find {|_id, count| count == 2}
+
+  # Pick which tile is below and which is to the right of it arbitrarily, then orient the corner
+  right_id, below_id = adjacent_ids[tl_corner_id]
+  right, below = tile_map[right_id], tile_map[below_id]
+  tl_tile = tile_map[tl_corner_id].all_orientations.find_one! do |tile|
+    right.all_possible_sides.include?(tile.right) &&
+      below.all_possible_sides.include?(tile.bottom)
   end
 
-  corners = counts_to_ids[2]
-  edges = counts_to_ids[3]
-  middle = counts_to_ids[4]
-  raise "Uncertain result" unless corners.length == 4
-  raise "Uncertain result" unless edges.length == (side_len - 2) * 4
-  raise "Uncertain result" unless middle.length == tiles.length - edges.length - corners.length
-
-  grid = [[corners[0]]]
-  used = [corners[0]]
+  # Fill in the rest of the grid
+  grid = [[tl_tile]]
   side_len.times do |r|
     grid[r] ||= []
     side_len.times do |c|
       next if [r, c] == [0, 0]
-      known_adjacent = []
-      if c != 0
-        known_adjacent << grid[r][c - 1]
-      end
-      if r != 0
-        known_adjacent << grid[r - 1][c]
-      end
-      selecting_from =
-        if (r == 0 || r == side_len - 1) && (c == 0 || c == side_len - 1)
-          corners
-        elsif r == 0 || r == side_len - 1 || c == 0 || c == side_len - 1
-          edges
-        else
-          middle
-        end
-
-      id = (selecting_from - used).find do |id|
-        connects_to = matches_hash[id]
-        known_adjacent.all? {|i| connects_to.include?(i)}
-      end
-      used << id
-      grid[r][c] = id
-    end
-  end
-
-  id_to_tile = tiles.map {[_1.id, _1]}.to_h
-
-  # Find the orientation of the first tile
-  first_tile = id_to_tile[grid[0][0]]
-  neighbor_to_right = id_to_tile[grid[0][1]]
-  neighbor_below = id_to_tile[grid[1][0]]
-  possible_right_sides = first_tile.all_possible_sides & neighbor_to_right.all_possible_sides
-  possible_bottom_sides = first_tile.all_possible_sides & neighbor_below.all_possible_sides
-  first_tile = possible_right_sides.filter_map do |possible_right_side|
-    first_tile_would_be = first_tile.all_orientations.find {_1.right == possible_right_side}
-    first_tile_would_be if possible_bottom_sides.include?(first_tile_would_be.bottom)
-  end
-  raise "huh" if first_tile.length != 1
-  first_tile = first_tile[0]
-
-  # Now build the rest of the grid
-  real_grid = [[first_tile]]
-
-  side_len.times do |r|
-    side_len.times do |c|
-      next if [r, c] == [0, 0]
-      real_grid[r] ||= []
       if c == 0
-        neighbor = real_grid[r - 1][c]
-        sides = [:top, :bottom] # mine, neighbor's
+        neighbor = grid[r - 1][c]
+        neighbor_side = neighbor.bottom
+        this_side = :top
       else
-        neighbor = real_grid[r][c - 1]
-        sides = [:left, :right] # mine, neighbor's
+        neighbor = grid[r][c - 1]
+        neighbor_side = neighbor.right
+        this_side = :left
       end
 
-      tile = id_to_tile[grid[r][c]]
-      orientation = tile.all_orientations.find do
-        _1.send(sides[0]) == neighbor.send(sides[1])
+      possible_ids = adjacent_ids[neighbor.id]
+      id = possible_ids.find_one! do |id|
+        tile_map[id].all_possible_sides.include?(neighbor_side)
       end
-      raise "could not find orientation for #{r}, #{c}" unless orientation
-      real_grid[r][c] = orientation
+      tile = tile_map[id]
+      grid[r][c] = tile.all_orientations.find_one! do |oriented_tile|
+        oriented_tile.send(this_side) == neighbor_side
+      end
     end
   end
 
-  # Now build the image
+  # Build the image
   image = Matrix.zero(side_len * 8, side_len * 8)
-  real_grid.each_with_index do |row, row_num|
+  grid.each_with_index do |row, row_num|
     row.each_with_index do |tile, col_num|
       image[(row_num*8)...((row_num+1)*8), (col_num*8)...((col_num+1)*8)] = Matrix.rows(tile.trim_edges)
     end
   end
 
-  monster_os = Set[]
-  pattern = <<~PATTERN
+  # Find the monsters
+  monster_coords = Set[]
+  pattern_string = <<~PATTERN
   ..................#.
   #....##....##....###
   .#..#..#..#..#..#...
   PATTERN
-  pattern_tile = Tile.new(nil, pattern.split("\n").map(&:chars))
-  pattern_tile.all_orientations.each do |o|
-    width, height = o.width, o.height
-    (0..image.row_count-height).each do |row|
-      (0..image.column_count-width).each do |col|
+  pattern_tile = Tile.new(nil, pattern_string.split("\n").map(&:chars))
+  pattern_tile.all_orientations.each do |pattern|
+    width, height = pattern.width, pattern.height
+    (0..image.row_count - height).each do |row|
+      (0..image.column_count - width).each do |col|
         slice = image.minor(row, height, col, width)
-        possible_new_os = Set[]
-        matches = o.grid.each_with_index.all? do |o_row, row_index|
-          o_row.each_with_index.all? do |o_char, col_index|
-            next true if o_char == '.'
-            possible_new_os << [row+row_index, col+col_index]
-            o_char == slice[row_index, col_index]
+        possible_new_coords = Set[]
+        matches_pattern = pattern.grid.each_with_index.all? do |pattern_row, row_index|
+          pattern_row.each_with_index.all? do |pattern_char, col_index|
+            next true if pattern_char == '.'
+            possible_new_coords << [row+row_index, col+col_index]
+            pattern_char == slice[row_index, col_index]
           end
         end
-        if matches
-          monster_os += possible_new_os
-        end
+        monster_coords += possible_new_coords if matches_pattern
       end
     end
   end
 
-  # new_image = image.clone
-  # monster_os.each do |(r, c)|
-  #   new_image[r, c] = 'O'
-  # end
-  #
-  # new_image.to_a.each do |row|
-  #   puts row.join
-  # end
-
-  image.to_a.flatten.count('#') - monster_os.length
+  image.to_a.flatten.count('#') - monster_coords.length
 end
 
 s.exec(20)
