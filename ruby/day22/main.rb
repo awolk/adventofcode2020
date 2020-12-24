@@ -1,8 +1,5 @@
 require 'set'
 require_relative '../aoc/aoc'
-require_relative '../aoc/memo'
-
-include Memo
 
 s = AOC::Solution.new
 
